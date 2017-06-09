@@ -1,0 +1,50 @@
+1. 각언어별 투표값에 대한 sum을 구하고 순위별로 표출한다. 
+scala> val votes = Seq(("scala", 1), ("java", 4), ("scala", 10), ("scala", 1), ("python", 10))
+votes: Seq[(String, Int)] = List((scala,1), (java,4), (scala,10), (scala,1), (python,10))
+
+scala> votes.groupBy(_._1)
+res21: scala.collection.immutable.Map[String,Seq[(String, Int)]] = 
+Map(scala -> List((scala,1), (scala,10), (scala,1)), java -> List((java,4)), python -> List((python,10)))
+
+scala> votes.groupBy(_._1) mapValues(vote => vote.foldLeft(0)(_ + _._2))
+res20: scala.collection.immutable.Map[String,Int] = Map(scala -> 12, java -> 4, python -> 10)
+
+scala> votes.groupBy(_._1) mapValues(vote => vote.foldLeft(0)(_ + _._2)) toList
+warning: there was one feature warning; re-run with -feature for details
+res31: List[(String, Int)] = List((scala,12), (java,4), (python,10))
+
+scala> res31.sorted
+res32: List[(String, Int)] = List((java,4), (python,10), (scala,12))
+
+scala> res31.sortWith(_._2 > _._2)
+res34: List[(String, Int)] = List((scala,12), (python,10), (java,4))
+
+
+scala> votes.transform((k,v) => (v, k)).groupBy(_._2)
+res71: scala.collection.immutable.Map[(Int, String),scala.collection.immutable.Map[String,(Int, String)]] = 
+Map((10,python) -> Map(python -> (10,python)), (4,java) -> Map(java -> (4,java)), (1,scala) -> Map(scala -> (1,scala)))
+
+
+
+
+[foldLeft/foldRight]
+scala> val s = "1 2 3 4 5".split(" ")
+s: Array[String] = Array(1, 2, 3, 4, 5)
+
+scala> s.foldLeft("S") {(x,y) => { println(x);x+y }}
+S
+S1
+S12
+S123
+S1234
+res67: String = S12345
+
+scala> s.foldRight("S") {(x,y) => { println(x);x+y }}
+5
+4
+3
+2
+1
+res68: String = 12345S
+
+scala>
